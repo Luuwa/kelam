@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Kelam Join Lobby</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.5.0/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .page-container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .join-container {
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px; /* veya istediğiniz genişliği belirleyin */
+            display: grid;
+            gap: 1rem;
+            margin: auto;
+        }
+
+        .join-container form {
+            display: grid;
+            gap: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-container">
+        <div class="join-container">
+            <h2 class="text-2xl font-semibold mb-6">Join</h2>
+
+            <form id="joinForm">
+                <div class="mb-4">
+                    <label for="firstname" class="block text-sm font-medium">First Name</label>
+                    <input name="first_name" id="firstname" type="text" placeholder="Type your first name" class="input input-bordered input-primary w-full max-w-xs" />
+                </div>
+
+                <div class="mb-6">
+                    <button type="submit" class="w-full btn btn-active btn-primary text-white p-2 rounded-md">Join</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var form = document.getElementById("joinForm");
+        form.onsubmit = submitForm;
+        function submitForm() {
+            var form = document.getElementById("joinForm");
+            var firstName = form.elements["first_name"].value;
+
+            var currentUrl = window.location.href;
+            var newUrl = currentUrl + '/' + firstName;
+
+            window.location.href = newUrl;
+
+            return false;
+        }
+    </script>
+
+</body>
+
+</html>
