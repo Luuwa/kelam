@@ -142,7 +142,9 @@ if (!('webkitSpeechRecognition' in window)) {
   async function main() {
     const myvad = await vad.MicVAD.new({
       onSpeechStart: () => {
-        document.getElementById("chat_form").setAttribute("phx-value-start",get_date())
+        if (!document.getElementById("chat_form").hasAttribute("phx-value-start")) {
+          document.getElementById("chat_form").setAttribute("phx-value-start",get_date())
+        }
         if (recognizing) {
             //pass
         } else {
@@ -161,6 +163,9 @@ if (!('webkitSpeechRecognition' in window)) {
     var temp_f="";
     var interim_transcript = '';
     for (var i = event.resultIndex; i < event.results.length; ++i) {
+      if (!document.getElementById("chat_form").hasAttribute("phx-value-start")) {
+        document.getElementById("chat_form").setAttribute("phx-value-start",get_date())
+      }
       if (event.results[i].isFinal) {
         final_transcript += event.results[i][0].transcript;
         temp_f +=event.results[i][0].transcript;
