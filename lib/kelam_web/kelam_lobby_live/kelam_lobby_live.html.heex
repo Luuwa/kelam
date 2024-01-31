@@ -1,116 +1,174 @@
-<link href="https://cdn.jsdelivr.net/npm/daisyui@4.5.0/dist/full.min.css" rel="stylesheet" type="text/css" />
-<button id="skipToMainContentButton" onclick="skipToMainContent()" class="fixed top-1 left-1  btn btn-active btn-primary px-4 py-2 rounded" style="display: none;">Skip to Main Content</button>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.js">
+</script>
 
-<section id="introductionSection" class="container mx-auto mt-4 p-4 mb-8  rounded shadow border border-gray-300">
+<script src="https://cdn.jsdelivr.net/npm/@ricky0123/vad/dist/index.browser.js">
+</script>
+<link
+  href="https://cdn.jsdelivr.net/npm/daisyui@4.5.0/dist/full.min.css"
+  rel="stylesheet"
+  type="text/css"
+/>
+<button
+  id="skipIntroduction"
+  onclick="skipIntroduction()"
+  class="fixed top-1 left-1 btn btn-active btn-primary px-4 py-2 rounded"
+  style="display: none"
+>
+  Skip Introduction
+</button>
+
+<section
+  id="introductionSection"
+  class="container mx-auto mt-4 p-4 mb-8 rounded shadow border border-gray-300"
+>
   <h2 class="text-2xl font-bold mb-4">Introduction</h2>
+
   <p>
-      Welcome to kelam, This introduction will guide you through the available keyboard shortcuts for better accessibility.
-      You can use the following shortcuts to navigate between different sections:
+    Welcome to kelam, This introduction will guide you through the available
+    keyboard shortcuts for better accessibility. You can use the following
+    shortcuts to navigate between different sections:
   </p>
+
   <ul class="list-disc pl-6 mt-2">
-      <li><strong>Alt + C :</strong> Focus on Chat Section</li>
-      <li><strong>Alt + U :</strong> Focus on User List Section</li>
-      <li><strong>Alt + S :</strong> Focus on Settings Section</li>
+    <li><strong>Alt + C :</strong> Focus on Chat Section</li>
+
+    <li><strong>Alt + U :</strong> Focus on User List Section</li>
+
+    <li><strong>Alt + S :</strong> Focus on Settings Section</li>
   </ul>
+
   <p class="mt-4">
-      Additionally, there is a "Skip Introduction" button available for keyboard users.
+    Additionally, there is a "Skip Introduction" button available for keyboard
+    users.
   </p>
 </section>
+
 <main class="container mx-auto mt-4 p-4 flex flex-wrap">
-      
-      <section id="chatSection" class=" bg-neutral rounded shadow  w-full md:w-2/3 lg:w-3/4 mb-4 md:mb-0" tabindex="0">
-        <h2 class="text-xl font-bold mb-4">Chat</h2>
-        <div  phx-update="append" id="chat" class="h-96 overflow-y-auto">
+  <section
+    id="chatSection"
+    class="bg-neutral rounded shadow w-full md:w-2/3 lg:w-3/4 mb-4 md:mb-0"
+    tabindex="0"
+  >
+    <h2 class="text-xl font-bold mb-4">Chat</h2>
 
-          <%= for message <- @messages do %>
-              <p id={message.id} class="mb-4 border-b  pb-4"><strong><%= message.username %></strong> says, <%= message.content %></p>
-            <!-- ... -->
-            <% end %>
-        </div>
-        <form id="chat_form"  phx-submit="message"    class="flex items-center mt-2">
-
-        </form>
-    </section> 
-    <section id="userListSection" class="bg-neutral rounded shadow w-full md:w-1/3 lg:w-1/4 mb-4 md:mb-0" tabindex="0">
-      <h2 class="text-xl font-bold mb-4">User List</h2>
-      <div class=" p-4  h-96 overflow-y-auto">
-          <ul>
-            <%= for user <- @user_list do %>
-              <li class="mb-2"><%= user.username %> 
-            </li>
-            <% end %>
-          </ul>
-      </div>
-  </section>
-  <section id="settingsSection" class="bg-neutral w-full md:w-1/3 lg:w-1/4" tabindex="0">
-    <div class=" p-4 rounded shadow">
-        <h2 class="text-xl font-bold mb-4">Settings</h2>
-        <div class="form-control" phx-change="validate">
-          <label class="label cursor-pointer">
-            <span class="label-text">Youtube Captioning</span> 
-            <input phx-click="yt_toggle" type="checkbox" class="toggle toggle-success" checked={@settings.yt_captioning} />
-          </label>
-          <form class="form-control" phx-change="yt_captions_url_changed" >
-            <div class="label">
-              <span class="label-text">Youtube Captions Url</span>
-            </div>
-            <input name="yt_caption_url" value={@settings.yt_caption_url} type="text" placeholder="Url goes here" class="input input-bordered input-success w-full max-w-xs" />
-          </form>
-        </div>
+    <div phx-update="stream" id="chat" class="h-96 overflow-y-auto">
+      <%= for message <- @messages do %>
+        <p id={message.id} class="mb-4 border-b pb-4">
+          <strong>
+            <%= message.username %>
+          </strong>
+          says, <%= message.content %>
+        </p>
+        <!-- ... -->
+      <% end %>
     </div>
-</section>
 
+    <form id="chat_form" phx-submit="message" aria-hidden="true" class="flex items-center mt-2"></form>
+  </section>
+
+  <section
+    id="userListSection"
+    class="bg-neutral rounded shadow w-full md:w-1/3 lg:w-1/4 mb-4 md:mb-0"
+    tabindex="0"
+  >
+    <h2 class="text-xl font-bold mb-4">User List</h2>
+
+    <div class="p-4 h-96 overflow-y-auto">
+      <ul>
+        <%= for user <- @user_list do %>
+          <li class="mb-2">
+            <%= user.username %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </section>
+
+  <section id="settingsSection" class="bg-neutral w-full md:w-1/3 lg:w-1/4" tabindex="0">
+    <div class="p-4 rounded shadow">
+      <h2 class="text-xl font-bold mb-4">Settings</h2>
+
+      <div class="form-control" phx-change="validate">
+        <label class="label cursor-pointer">
+          <span class="label-text">Youtube Captioning</span>
+          <input
+            phx-click="yt_toggle"
+            type="checkbox"
+            class="toggle toggle-success"
+            checked={@settings.yt_captioning}
+          />
+        </label>
+
+        <form class="form-control" phx-change="yt_captions_url_changed">
+          <div class="label">
+            <span class="label-text">Youtube Captions Url</span>
+          </div>
+
+          <input
+            name="yt_caption_url"
+            value={@settings.yt_caption_url}
+            type="text"
+            autocomplete="off"
+            placeholder="Url goes here"
+            class="input input-bordered input-success w-full max-w-xs"
+          />
+        </form>
+      </div>
+    </div>
+  </section>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@ricky0123/vad/dist/index.browser.js"></script>
-<script>
-  function skipToMainContent() {
-    document.getElementById("chatSection").focus();
-}
-document.addEventListener("keydown", function (event) {
-  if (event.key === "Tab") {
-      document.getElementById("skipToMainContentButton").style.display = "block";
-  }
-});
-  document.addEventListener("keydown", function (event) {
-      if (event.altKey) {
-          switch (event.key) {
-              case "c":
-                  document.getElementById("chatSection").focus();
-                  break;
-              case "u":
-                  document.getElementById("userListSection").focus();
-                  break;
-              case "s":
-                  document.getElementById("settingsSection").focus();
-                  break;
-          }
-      }
-  });
 
-var final_transcript = '';
+<script>
+  function skipIntroduction() {
+    document.getElementById("chatSection").focus();
+  }
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Tab") {
+      document.getElementById("skipIntroduction").style.display = "block";
+    }
+  });
+  document.addEventListener("keydown", function (event) {
+    if (event.altKey) {
+      switch (event.key) {
+        case "c":
+          document.getElementById("chatSection").focus();
+          break;
+        case "u":
+          document.getElementById("userListSection").focus();
+          break;
+        case "s":
+          document.getElementById("settingsSection").focus();
+          break;
+      }
+    }
+  });
+  
+</script>
+<script>
+  var final_transcript = "";
 var recognizing = false;
 var ignore_onend;
 var start_timestamp;
-if (!('webkitSpeechRecognition' in window)) {
+var chat_form = document.getElementById("chat_form");
+if (!("webkitSpeechRecognition" in window)) {
   upgrade();
 } else {
   var recognition = new webkitSpeechRecognition();
   recognition.continuous = true;
   recognition.interimResults = true;
   recognition.lang = "tr-TR";
-  recognition.onstart = function() {
+  recognition.onstart = function () {
     recognizing = true;
   };
 
-  recognition.onerror = function(event) {
-    if (event.error == 'no-speech') {
+  recognition.onerror = function (event) {
+    if (event.error == "no-speech") {
       ignore_onend = true;
     }
-    if (event.error == 'audio-capture') {
+    if (event.error == "audio-capture") {
       ignore_onend = true;
     }
-    if (event.error == 'not-allowed') {
+    if (event.error == "not-allowed") {
       if (event.timeStamp - start_timestamp < 100) {
       } else {
       }
@@ -118,85 +176,85 @@ if (!('webkitSpeechRecognition' in window)) {
     }
   };
 
-  recognition.onend = function() {
-    recognition.start()
+  recognition.onend = function () {
+    recognition.start();
     if (ignore_onend) {
       return;
     }
     if (!final_transcript) {
       return;
     }
-    if (window.getSelection) {
-      window.getSelection().removeAllRanges();
-      var range = document.createRange();
-      window.getSelection().addRange(range);
-    }
   };
-  function get_date(){
+  function get_date() {
     var dat = new Date();
-    datx=dat.toISOString()
-    iso=datx.slice(0, -1) 
-    return  iso
+    datx = dat.toISOString();
+    iso = datx.slice(0, -1);
+    return iso;
   }
-  
+
   async function main() {
     const myvad = await vad.MicVAD.new({
       onSpeechStart: () => {
-        if (!document.getElementById("chat_form").hasAttribute("phx-value-start")) {
-          document.getElementById("chat_form").setAttribute("phx-value-start",get_date())
-        }
         if (recognizing) {
-            //pass
+          //pass
         } else {
-            recognition.start();
-      }
-      
+          recognition.start();
+        }
       },
       onSpeechEnd: (audio) => {
-        document.getElementById("chat_form").setAttribute("phx-value-end",get_date())
-      }
-    })
-    myvad.start()
+        //pass
+      },
+    });
+    myvad.start();
   }
-  main()
-  recognition.onresult = function(event) {
-    var temp_f="";
-    var interim_transcript = '';
+  function setMessages(message){
+    chat_form.setAttribute("phx-value-end", get_date());
+    chat_form.setAttribute("phx-value-message", capitalize(message));
+    if (chat_form.hasAttribute("phx-value-end") || chat_form.hasAttribute("phx-value-start")) {
+      chat_form.dispatchEvent(
+        new Event("submit", { bubbles: true, cancelable: true })
+  );
+    }
+    
+    
+  }
+  main();
+  recognition.onresult = function (event) {
+    if (!chat_form.hasAttribute("phx-value-start")) {
+      chat_form.setAttribute("phx-value-start", get_date());
+    }
+    var temp_f = "";
+    var interim_transcript = "";
     for (var i = event.resultIndex; i < event.results.length; ++i) {
-      if (!document.getElementById("chat_form").hasAttribute("phx-value-start")) {
-        document.getElementById("chat_form").setAttribute("phx-value-start",get_date())
-      }
+      
       if (event.results[i].isFinal) {
         final_transcript += event.results[i][0].transcript;
-        temp_f +=event.results[i][0].transcript;
-        document.getElementById("chat_form").setAttribute("phx-value-message",capitalize(temp_f))
-        document.getElementById("chat_form").dispatchEvent(
-            new Event("submit", {bubbles: true, cancelable: true})
-          )
-        
+        temp_f += event.results[i][0].transcript;
+        setMessages(temp_f)
       } else {
         interim_transcript += event.results[i][0].transcript;
       }
     }
-    
+
     final_transcript = capitalize(final_transcript);
 
-    interim_span.value+= linebreak(interim_transcript);
+    //interim_span.value += linebreak(interim_transcript);
     if (final_transcript || interim_transcript) {
     }
   };
 }
 
-
-
 var two_line = /\n\n/g;
 var one_line = /\n/g;
 function linebreak(s) {
-  return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
+  return s.replace(two_line, "<p></p>").replace(one_line, "<br>");
 }
 
 var first_char = /\S/;
 function capitalize(s) {
-  return  s.replace(first_char, function(m) { return m.toUpperCase(); });
+  return s.replace(first_char, function (m) {
+    return m.toUpperCase();
+  });
 }
+
 </script>

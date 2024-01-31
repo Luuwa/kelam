@@ -7,7 +7,6 @@ defmodule KelamWeb.KelamLobbyLive do
   @impl true
   def mount(%{"lobby_id" => lobby_id, "username" => username}, _session, socket) do
     topic = "lobby:" <> lobby_id
-    Logger.info("Topic: " <> topic)
 
     if connected?(socket) do
       KelamWeb.Presence.track(self(), topic, username, %{})
@@ -21,8 +20,6 @@ defmodule KelamWeb.KelamLobbyLive do
         Lobby.put(topic, %{yt_captioning: false, yt_caption_url: "", seq: 0})
         Lobby.get(topic)
       end
-
-    Logger.info(settings)
 
     {:ok,
      assign(socket,
@@ -138,13 +135,10 @@ defmodule KelamWeb.KelamLobbyLive do
       Lobby.update(topic, :seq, temp_seq + 1)
       myurl = lobby_settings.yt_caption_url <> "&seq=" <> Integer.to_string(lobby_settings.seq)
 
-      res =
-        Req.post!(myurl,
-          headers: [{"content-type", "text/plain"}],
-          body: caption
-        )
-
-      Logger.info(res)
+      Req.post!(myurl,
+        headers: [{"content-type", "text/plain"}],
+        body: caption
+      )
     end
 
     {:ok}
