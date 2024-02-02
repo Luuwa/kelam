@@ -51,7 +51,7 @@
   >
     <h2 class="text-xl font-bold mb-4">Chat</h2>
 
-    <div phx-update="stream" id="chat" class="h-96 overflow-y-auto">
+    <div phx-update="stream" id="chat" phx-hook="ChatScroll" class="h-96 overflow-y-auto">
       <%= for message <- @messages do %>
         <p id={message.id} class="mb-4 border-b pb-4">
           <strong>
