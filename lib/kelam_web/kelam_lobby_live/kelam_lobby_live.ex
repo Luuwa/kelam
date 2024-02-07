@@ -133,9 +133,11 @@ defmodule KelamWeb.KelamLobbyLive do
     if lobby_settings.yt_captioning do
       temp_seq = Lobby.get(topic).seq
       Lobby.update(topic, :seq, temp_seq + 1)
-      myurl = lobby_settings.yt_caption_url <> "&seq=" <> Integer.to_string(lobby_settings.seq)
 
-      Req.post!(myurl,
+      caption_url =
+        lobby_settings.yt_caption_url <> "&seq=" <> Integer.to_string(lobby_settings.seq)
+
+      Req.post!(caption_url,
         headers: [{"content-type", "text/plain"}],
         body: caption
       )
